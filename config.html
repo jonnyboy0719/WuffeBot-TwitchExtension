@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WuffesBot SoundAlerts -- Configurations</title>
+    <!-- Base CSS (only for the body)-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- Main item list -->
+    <link rel="stylesheet" type="text/css" href="css/items.css">
+    <!-- modal from https://github.com/VedalAI/swarm-control/blob/main/frontend/www/css/modals.css -->
+    <!-- I take no credit for the CSS for the modal stuff, It has been slightly modified though-->
+    <link rel="stylesheet" type="text/css" href="css/modals.css">
+    <script src="https://extension-files.twitch.tv/helper/v1/twitch-ext.min.js"></script>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <!-- Our meat & potatoes -->
+    <script src="js/config.js"></script>
+</head>
+<body>
+    <form id="config">
+        <fieldset style="border: 0;">
+            <div style="margin-top: 10px;margin-bottom: 10px;">
+                <p style="color:rgb(180, 123, 255)">
+                    This public key is not required if you don't use the monthly goal from the API.
+                </p>
+                <label for="publickey">Public API Key:</label>
+                <input type="text" name="option" id="publickey" />
+            </div>
+            <div style="margin-top: 10px;margin-bottom: 10px;">
+                <input type="submit" class="confbutton" value="Save Broadcaster Config" />
+            </div>
+        </fieldset>
+    </form>
+</body>
+</html>

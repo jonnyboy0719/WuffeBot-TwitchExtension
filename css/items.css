@@ -1,0 +1,55 @@
+#items {
+    overflow: auto;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.item {
+    margin-top: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    min-width: 150px;
+    background-color: rgba(0, 0, 0, 0.637);
+}
+
+.item span {
+    text-align: center;
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 6px;
+}
+
+.item img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.item .button, .confbutton {
+    background-color: #9b1791;
+    border: none;
+    color: white;
+    padding: 10px 0px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.item .button:hover,
+.confbutton:hover {
+    background-color: #e922d8;
+}
+
+.buy_button {
+    background-image: url(../assets/bits.gif);
+    background-size: 25px;
+    background-repeat: no-repeat;
+    background-position-x: 15px;
+}
