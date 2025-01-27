@@ -3,7 +3,6 @@ var tuid = "";
 var ebs = "";
 var public_key = '';
 var id_cache = undefined;
-var request_twitchid_share = false;
 
 // because who wants to type this every time?
 var twitch = window.Twitch.ext;
@@ -50,48 +49,6 @@ var requests = {
         call: 'GET'
     }
 };
-
-function GetElement(tag, attributes, appendTo)
-{
-    var el = document.createElement(tag);
-    if (typeof attributes == 'object')
-    {
-        for (index in attributes)
-        {
-            var type = typeof attributes[index];
-            if (type === "object")
-            {
-                for (index2 in attributes[index])
-                {
-                    el[index][index2] = attributes[index][index2];
-                }
-            }
-            else
-            {
-                el[index] = attributes[index];
-            }
-        }
-    }
-    else
-    {
-        el.innerHTML = attributes;
-    }
-    //if (appendTo) appendTo.appendChild(el);
-    if (appendTo) appendTo.insertBefore(el, appendTo.children[0]);
-    return el;
-}
-
-function TwitchLog(data)
-{
-    twitch.rig.log(data);
-    var log = document.getElementById('log');
-    if (log == undefined)
-        log = GetElement('div', { id: 'log' }, document.body);
-    var logEntry = GetElement('div', {
-        className: 'logEntry',
-        innerHTML: '<div class="logValue">' + data + '</div>'
-    }, log);
-}
 
 twitch.configuration.onChanged(function() {
     // Checks if configuration is defined
@@ -147,67 +104,6 @@ twitch.bits.onTransactionCancelled( function() {
     DoModalPopup( 'Transaction cancelled.', 'The transaction was cancelled.', true );
 });
 
-function ClosePopup(iserror)
-{
-    if (iserror && request_twitchid_share)
-    {
-        request_twitchid_share = false;
-        twitch.actions.requestIdShare();
-    }
-    const modal = document.getElementById(iserror ? 'modal-error' : 'modal-success');
-    modal.style.scale = "0.9";
-    setTimeout(() => {
-        modal.remove();
-    }, 500);
-    if (!iserror) DeleteModal();
-}
-
-function DoModalPopup(title, msg, iserror)
-{
-    const ModalWrapper = document.getElementById("modal-wrapper");
-    // Main Modal
-    var MainModal = CreateUIElement('div', ModalWrapper);
-    MainModal.setAttribute( 'class', 'modal-overlay' );
-    MainModal.setAttribute( 'id', iserror ? 'modal-error' : 'modal-success' );
-    MainModal.style.pointerevents = 'none';
-    MainModal.style.opacity = "0";
-    MainModal.style.scale = "0.9";
-
-    // Our error info
-    var ErrorInfo = CreateUIElement('p', MainModal);
-    ErrorInfo.setAttribute( 'class', iserror ? 'modal-error-x' : 'modal-success-x' );
-    ErrorInfo.innerHTML = iserror ? '&#x2715;' : '&#x2714;';
-
-    var ModalDesc = CreateUIElement('div', MainModal);
-    ModalDesc.setAttribute( 'class', 'modal-descriptors' );
-
-    var DescData = CreateUIElement('h2', ModalDesc);
-    DescData.textContent = title;
-
-    DescData = CreateUIElement('p', ModalDesc);
-    DescData.textContent = msg;
-
-    // Our buttons
-    var ButtonWrapper = CreateUIElement('div', ModalDesc);
-    ButtonWrapper.setAttribute( 'class', 'modal-buttons' );
-
-    // Close
-    var item_btn = CreateUIElement('button', ButtonWrapper);
-    item_btn.setAttribute( 'class', 'button btn-danger' );
-	item_btn.setAttribute( 'id', 'close_popup' );
-    item_btn.textContent = 'Close';
-
-    // Now that everything is created, fade the modal in.
-    requestAnimationFrame(() => {
-        MainModal.style.scale = "1";
-        MainModal.style.opacity = "1";
-    });
-
-    $('#close_popup').click(function () {
-        ClosePopup( iserror ? true : false );
-    });
-}
-
 function DoBuyItem(data, failure)
 {
     id_cache = undefined;
@@ -237,16 +133,6 @@ function OnRetrieveItems(data, failure)
 }
 
 function CleanUpSKU( sku ) { return sku.replace("bits", ''); }
-function DeleteModal()
-{
-    const element = document.getElementById("modal-wrapper");
-    const modal = document.getElementById("modal");
-    element.style.opacity = "0";
-    modal.style.scale = "0.9";
-    setTimeout(() => {
-        element.remove();
-    }, 500);
-}
 
 function OnRedeem( id, reedem )
 {
@@ -263,14 +149,6 @@ function OnRedeem( id, reedem )
     }
     id_cache = '&id=' + id;
     twitch.bits.useBits( GetProduct( id ).sku );
-}
-
-function CreateUIElement( value, parent )
-{
-    var ui = document.createElement( value );
-    if ( parent == undefined ) document.body.appendChild( ui );
-    else parent.append( ui );
-    return ui;
 }
 
 function ShowItemDetails( id )
@@ -376,6 +254,7 @@ function AddNewTableItem( item )
     var items_div = document.getElementById('items');
     var item_div = CreateUIElement('div', items_div);
 	item_div.setAttribute( 'class', 'item' );
+	item_div.setAttribute( 'id', 'show_' + item.id );
 	// Image (or video)
     if ( item.image.includes(".webm") || item.image.includes(".mp4") )
 	{
@@ -403,7 +282,6 @@ function AddNewTableItem( item )
     var item_btn = CreateUIElement('button', item_div);
 	item_btn.innerHTML = '<span class="buy_button">' + CleanUpSKU( item.sku ) + ' Bits</span>';
 	item_btn.setAttribute( 'class', 'button' );
-	item_btn.setAttribute( 'id', 'show_' + item.id );
     $('#show_' + item.id).click(function () {
         ShowItemDetails( item.id );
     });
